@@ -9,8 +9,9 @@ import (
 )
 
 type AppConfig struct {
-	DB  DBConfig
-	Api ApiConfig
+	DB       DBConfig
+	Api      ApiConfig
+	Telegram TelegramConfig
 }
 
 type DBConfig struct {
@@ -24,6 +25,10 @@ type DBConfig struct {
 
 type ApiConfig struct {
 	Port string
+}
+
+type TelegramConfig struct {
+	TelegramBotToken string
 }
 
 func initConfig() error {
@@ -41,7 +46,13 @@ func GetAppConfig() (*AppConfig, error) {
 		return nil, err
 	}
 
-	apiConfig := ApiConfig{Port: viper.GetString("api.port")}
+	telegramConfig := TelegramConfig{
+		TelegramBotToken: os.Getenv("telegram_bot_token"),
+	}
+
+	apiConfig := ApiConfig{
+		Port: viper.GetString("api.port"),
+	}
 
 	dbConfig := DBConfig{
 		Host:     os.Getenv("host"),
@@ -55,5 +66,6 @@ func GetAppConfig() (*AppConfig, error) {
 	return &AppConfig{
 		DB:  dbConfig,
 		Api: apiConfig,
+		Telegram: telegramConfig,
 	}, nil
 }
